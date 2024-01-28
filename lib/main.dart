@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:isar_crud/screens/list_view.dart';
-import 'package:isar_crud/reusable_widgets/custom_app_bar.dart';
+import 'package:isar_crud/db/operations.dart';
+import 'package:isar_crud/home_view.dart';
+import 'package:isar_crud/widgets/custom_alert_dialog.dart';
+import 'package:isar_crud/widgets/custom_app_bar.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Operations.connectDb();
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => Operations()),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,24 +21,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      // themeMode: ThemeMode.dark,
-      // darkTheme: ThemeData(
-      //   brightness: Brightness.dark,
-      // ),
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Container(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        child: Scaffold(
-          appBar: const MyAppBar(),
-          body:  const SafeArea(
-            child: MyList()
+      home: Builder(
+        builder: (context) => SizedBox(
+          width: double.maxFinite,
+          height: double.maxFinite,
+          child: Scaffold(
+            appBar: const CustomAppBar(),
+            body: const SafeArea(child: MyList()),
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: const Color(0xFFFFB100),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => const CustomDialog(adBtn: true));
+              },
+              child: const Icon(
+                Icons.add,
+                color: Colors.black,
+                weight: 100,
+              ),
+            ),
           ),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor:const  Color(0xFFFFB100),
-            onPressed: (){},
-            child: const Icon(Icons.add, color: Colors.black, weight: 100,),),
         ),
       ),
     );

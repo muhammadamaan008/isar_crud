@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:isar_crud/widgets/custom_alert_dialog.dart';
 
-class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MyAppBar({super.key});
-
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const CustomAppBar({super.key});
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
@@ -17,7 +17,11 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.delete),
           iconSize: 30,
           color: Colors.red,
-          onPressed: () {},
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) => const CustomDialog(adBtn: false));
+          },
         )
       ],
     );
