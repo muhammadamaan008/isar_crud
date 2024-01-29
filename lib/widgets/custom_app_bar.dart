@@ -9,9 +9,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFFFFB100),
-      title: const Text('ISAR CRUD',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+      backgroundColor: Colors.black,
+      centerTitle: true,
+      title: const Text('ISAR',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 5)),
       actions: [
         IconButton(
           icon: const Icon(Icons.delete),
@@ -20,7 +21,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           onPressed: () {
             showDialog(
                 context: context,
-                builder: (context) => const CustomDialog(adBtn: false));
+                builder: (context) => const CustomDialog(adBtnPressed: false));
           },
         )
       ],

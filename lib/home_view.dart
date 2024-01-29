@@ -1,5 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:isar_crud/db/operations.dart';
+import 'package:isar_crud/database/crud_operations.dart';
 import 'package:isar_crud/models/person.dart';
 import 'package:isar_crud/widgets/custom_person_info_tile.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +21,6 @@ class _MyListState extends State<MyList> {
   void initState() {
     super.initState();
     context.read<Operations>().fetchAllPersons();
-    
   }
 
   @override
@@ -43,47 +44,64 @@ class _MyListState extends State<MyList> {
                 child: TextField(
                   onChanged: (String enterChar) {
                     List<Person> resultList = [];
+                    RegExp myRegExp = RegExp('[0-9]');
                     if (enterChar.isEmpty) {
                       resultList = allPersons;
-                    } else {
-                    resultList = allPersons
-                          .where((element) => element.name
-                              .toLowerCase()
-                              .contains(enterChar.toLowerCase()))
-                          .toList();
-                      print('Filtered list length: ${resultList.length}');
+                    } else if (enterChar.isNotEmpty) {
+                      if (!enterChar.startsWith(myRegExp)) {
+                        resultList = allPersons
+                            .where((element) => element.name
+                                .toLowerCase()
+                                .contains(enterChar.toLowerCase()))
+                            .toList();
+                      } else if (enterChar.startsWith(myRegExp)) {
+                        resultList = allPersons
+                            .where((element) =>
+                                element.age.toString().contains(enterChar))
+                            .toList();
+                      }
                     }
                     setState(() {
                       filteredPersons = resultList;
                     });
                   },
+                  cursorColor: Colors.black,
                   decoration: InputDecoration(
                       label: const Text('Search'),
-                      labelStyle: const TextStyle(color: Colors.white),
+                      labelStyle: const TextStyle(color: Colors.black),
                       suffixIcon: const Icon(Icons.search),
-                      suffixIconColor: Colors.white,
+                      suffixIconColor: Colors.black,
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(50),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 2)),
+                              const BorderSide(color: Colors.grey, width: 2)),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(50),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 2))),
+                              const BorderSide(color: Colors.grey, width: 2))),
                 ),
               ),
             ),
             PopupMenuButton<String>(
+              padding: EdgeInsets.zero,
+              color: Colors.white,
+              elevation: 5,
               icon: const Icon(Icons.filter_list),
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 PopupMenuItem<String>(
                   value: 'newest',
-                  child: const Text('Newest'),
+                  child: const Text(
+                    'Newest',
+                    style: TextStyle(
+                        color:  Colors.black, fontWeight: FontWeight.bold),
+                  ),
                   onTap: () => context.read<Operations>().latestAddedPerson(),
                 ),
                 PopupMenuItem<String>(
                   value: 'oldest',
-                  child: const Text('Oldest'),
+                  child: const Text('Oldest',
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold)),
                   onTap: () => context.read<Operations>().oldestAddedPerson(),
                 ),
               ],
@@ -96,7 +114,6 @@ class _MyListState extends State<MyList> {
           child: ListView.builder(
               itemBuilder: (context, index) {
                 final person = filteredPersons[index];
-                print(filteredPersons[index].name);
                 return PersonInfo(
                     imageUrl: person.imageUrl,
                     name: person.name,

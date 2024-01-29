@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:isar_crud/db/operations.dart';
+import 'package:isar_crud/database/crud_operations.dart';
 import 'package:isar_crud/home_view.dart';
 import 'package:isar_crud/widgets/custom_alert_dialog.dart';
 import 'package:isar_crud/widgets/custom_app_bar.dart';
@@ -31,15 +31,16 @@ class MyApp extends StatelessWidget {
             appBar: const CustomAppBar(),
             body: const SafeArea(child: MyList()),
             floatingActionButton: FloatingActionButton(
-              backgroundColor: const Color(0xFFFFB100),
+              elevation: 2,
+              backgroundColor: Colors.black,
               onPressed: () {
                 showDialog(
                     context: context,
-                    builder: (context) => const CustomDialog(adBtn: true));
+                    builder: (context) => const CustomDialog(adBtnPressed: true));
               },
               child: const Icon(
                 Icons.add,
-                color: Colors.black,
+                color: Colors.white,
                 weight: 100,
               ),
             ),

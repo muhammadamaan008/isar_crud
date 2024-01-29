@@ -11,12 +11,13 @@ class PersonInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Image(image: NetworkImage(imageUrl))),
-      title: Text(name),
-      subtitle: Text(age.toString()),
-    );
+    return Card(
+      color: Colors.grey,
+      elevation: 10,
+      child: ListTile(
+        leading: CircleAvatar(radius: 20,backgroundImage: NetworkImage(imageUrl)),
+        title: Text(name, style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+        subtitle: Text(age.toString(),style: const TextStyle(color: Color.fromARGB(255, 199, 199, 197)))),
+      );
   }
 }

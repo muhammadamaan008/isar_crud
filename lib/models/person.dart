@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 
+
 part 'person.g.dart';
 
 @Collection()
@@ -10,5 +11,5 @@ class Person {
   late String imageUrl;
   late int timeStamp;
 
-  Person({required this.name, required this.age, required this.imageUrl, required this.timeStamp});
+  Person({required this.name, required this.age,required this.imageUrl, required this.timeStamp});
 }

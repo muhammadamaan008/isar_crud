@@ -48,13 +48,13 @@ class Operations extends ChangeNotifier {
 
   Future<void> latestAddedPerson() async {
     personsData.clear();
-    personsData = await isar.persons.where().sortByTimeStamp().findAll();
+    personsData = await isar.persons.where().sortByTimeStampDesc().findAll();
     notifyListeners();
   }
 
   Future<void> oldestAddedPerson() async {
     personsData.clear();
-    personsData = await isar.persons.where().sortByTimeStampDesc().findAll();
+    personsData = await isar.persons.where().sortByTimeStamp().findAll();
     notifyListeners();
   }
 }
