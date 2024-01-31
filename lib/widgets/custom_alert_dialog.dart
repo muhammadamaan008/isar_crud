@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:isar_crud/database/crud_operations.dart';
+import 'package:isar_crud/View/home_view_model.dart';
 import 'package:isar_crud/models/person.dart';
 import 'package:isar_crud/utilis/constants.dart';
 import 'package:isar_crud/widgets/custom_text_field.dart';
@@ -14,6 +14,10 @@ class CustomDialog extends StatelessWidget {
     final nameController = TextEditingController();
     final ageController = TextEditingController();
     final imageUrlController = TextEditingController();
+    late Operations viewModel;
+    viewModel = Provider.of<Operations>(context,listen: false);
+    
+
     return AlertDialog(
       backgroundColor: const Color(0xFFD3D3D3),
       content: Column(
@@ -41,20 +45,19 @@ class CustomDialog extends StatelessWidget {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
               onPressed: () {
                 if (imageUrlController.text.isEmpty && adBtnPressed) {
-                  context.read<Operations>().addPerson(Person(
+                  viewModel.addPerson(Person(
                       name: nameController.text,
                       age: int.parse(ageController.text),
                       imageUrl: defaultUrl,
                       timeStamp: DateTime.now().microsecondsSinceEpoch));
                 } else if (imageUrlController.text.isNotEmpty && adBtnPressed) {
-                  context.read<Operations>().addPerson(Person(
+                  viewModel.addPerson(Person(
                       name: nameController.text,
                       age: int.parse(ageController.text),
                       imageUrl: defaultUrl,
                       timeStamp: DateTime.now().microsecondsSinceEpoch));
                 } else if (adBtnPressed == false) {
-                  context
-                      .read<Operations>()
+                  viewModel
                       .deletePersonByName(nameController.text);
                 }
                 Navigator.pop(context);

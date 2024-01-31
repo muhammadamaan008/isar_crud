@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:isar_crud/database/crud_operations.dart';
-import 'package:isar_crud/home_view.dart';
+import 'package:isar_crud/View/home_view_model.dart';
+import 'package:isar_crud/View/home_view.dart';
 import 'package:isar_crud/widgets/custom_alert_dialog.dart';
 import 'package:isar_crud/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';

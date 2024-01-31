@@ -13,6 +13,7 @@ class Operations extends ChangeNotifier {
   }
 
   List<Person> personsData = [];
+  List<Person> filteredPersons = [];
 
   Future<void> addPerson(Person person) async {
     await isar.writeTxn(() => isar.persons.put(person));
@@ -23,6 +24,7 @@ class Operations extends ChangeNotifier {
     List<Person> fetchPersons = await isar.persons.where().findAll();
     personsData.clear();
     personsData.addAll(fetchPersons);
+    filteredPersons = personsData;
     notifyListeners();
   }
 
@@ -49,12 +51,36 @@ class Operations extends ChangeNotifier {
   Future<void> latestAddedPerson() async {
     personsData.clear();
     personsData = await isar.persons.where().sortByTimeStampDesc().findAll();
+    filteredPersons = personsData;
     notifyListeners();
   }
 
   Future<void> oldestAddedPerson() async {
     personsData.clear();
     personsData = await isar.persons.where().sortByTimeStamp().findAll();
+    filteredPersons = personsData;
     notifyListeners();
+  }
+
+  void searchPerson(String charEntered) {
+    List<Person> resultList = [];
+    RegExp myRegExp = RegExp('[0-9]');
+    if (charEntered.isEmpty) {
+      resultList = personsData;
+    } else if (charEntered.isNotEmpty) {
+      if (!charEntered.startsWith(myRegExp)) {
+        resultList = personsData
+            .where((element) =>
+                element.name.toLowerCase().contains(charEntered.toLowerCase()))
+            .toList();
+      } else if (charEntered.startsWith(myRegExp)) {
+        resultList = personsData
+            .where((element) => element.age.toString().contains(charEntered))
+            .toList();
+      }
+    }
+
+    filteredPersons = resultList;
+    notifyListeners(); 
   }
 }

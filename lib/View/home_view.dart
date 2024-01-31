@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:isar_crud/database/crud_operations.dart';
-import 'package:isar_crud/models/person.dart';
+import 'package:isar_crud/View/home_view_model.dart';
 import 'package:isar_crud/widgets/custom_person_info_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -14,21 +11,12 @@ class MyList extends StatefulWidget {
 }
 
 class _MyListState extends State<MyList> {
-  List<Person> allPersons = [];
-  List<Person> filteredPersons = [];
-
+  late Operations viewModel;
   @override
   void initState() {
     super.initState();
-    context.read<Operations>().fetchAllPersons();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final watch = context.watch<Operations>();
-    allPersons = watch.personsData;
-    filteredPersons = allPersons;
+    viewModel = Provider.of<Operations>(context, listen: false);
+    viewModel.fetchAllPersons();
   }
 
   @override
@@ -43,27 +31,7 @@ class _MyListState extends State<MyList> {
                 padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
                 child: TextField(
                   onChanged: (String enterChar) {
-                    List<Person> resultList = [];
-                    RegExp myRegExp = RegExp('[0-9]');
-                    if (enterChar.isEmpty) {
-                      resultList = allPersons;
-                    } else if (enterChar.isNotEmpty) {
-                      if (!enterChar.startsWith(myRegExp)) {
-                        resultList = allPersons
-                            .where((element) => element.name
-                                .toLowerCase()
-                                .contains(enterChar.toLowerCase()))
-                            .toList();
-                      } else if (enterChar.startsWith(myRegExp)) {
-                        resultList = allPersons
-                            .where((element) =>
-                                element.age.toString().contains(enterChar))
-                            .toList();
-                      }
-                    }
-                    setState(() {
-                      filteredPersons = resultList;
-                    });
+                    viewModel.searchPerson(enterChar);
                   },
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
@@ -93,34 +61,41 @@ class _MyListState extends State<MyList> {
                   child: const Text(
                     'Newest',
                     style: TextStyle(
-                        color:  Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold),
                   ),
-                  onTap: () => context.read<Operations>().latestAddedPerson(),
+                  onTap: () => viewModel.latestAddedPerson(),
                 ),
                 PopupMenuItem<String>(
                   value: 'oldest',
                   child: const Text('Oldest',
                       style: TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold)),
-                  onTap: () => context.read<Operations>().oldestAddedPerson(),
+                  onTap: () => viewModel.oldestAddedPerson(),
                 ),
               ],
             ),
           ],
         ),
-        Expanded(
-            child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: ListView.builder(
-              itemBuilder: (context, index) {
-                final person = filteredPersons[index];
-                return PersonInfo(
-                    imageUrl: person.imageUrl,
-                    name: person.name,
-                    age: person.age);
-              },
-              itemCount: filteredPersons.length),
-        ))
+        Consumer<Operations>(
+          builder: (context, operations, child) {
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    final person = operations.filteredPersons[index];
+                    return PersonInfo(
+                      imageUrl: person.imageUrl,
+                      name: person.name,
+                      age: person.age,
+                    );
+                  },
+                  itemCount: operations.filteredPersons.length,
+                ),
+              ),
+            );
+          },
+        ),
       ],
     );
   }

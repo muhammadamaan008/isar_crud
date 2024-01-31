@@ -1,1 +1,1 @@
-const String defaultUrl = "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg";
+const String defaultUrl = "https://cdn.pixabay.com/photo/2020/06/30/10/23/icon-5355896_1280.png";
